@@ -1,6 +1,6 @@
 import numpy as np
 
-rows, cols = 10, 10
+rows, cols = 50,50
 
 # consistent random maze: closed borders, shared walls set on both sides
 maze = np.ones((rows, cols, 4), dtype=int)   # (top, right, bottom, left)
@@ -97,3 +97,30 @@ def dijkstra(graph, start, end):
     path.reverse()
 
     return path, distances[end]
+
+colors = {1: "#e8f5e9", 2: "#a5d6a7", 3: "#ffe082", 4: "#ffab40", 5: "#e53935"}
+rows, cols = 50, 50
+html = "<style>table{border-collapse:collapse;} td{width:14px;height:14px;padding:0;}</style>\n"
+
+# legend
+html += "<p>"
+for w, col in colors.items():
+    html += f'<span style="background:{col};padding:2px 8px;margin-right:6px;">cost {w}</span>'
+html += "</p>\n"
+
+html += "<table>\n"
+for r in range(rows):
+    html += "<tr>"
+    for c in range(cols):
+        top, right, bottom, left = maze[r, c]
+        style = f"background:{colors[int(weights[r, c])]};"
+        if top:    style += "border-top:2px solid black;"
+        if right:  style += "border-right:2px solid black;"
+        if bottom: style += "border-bottom:2px solid black;"
+        if left:   style += "border-left:2px solid black;"
+        html += f'<td style="{style}"></td>'
+    html += "</tr>\n"
+html += "</table>"
+
+with open("test.html", "w") as f:
+    f.write(html)
