@@ -154,9 +154,13 @@ for r in range(rows):
         if right:  style += "border-right:2px solid black;"
         if bottom: style += "border-bottom:2px solid black;"
         if left:   style += "border-left:2px solid black;"
-        html += f'<td style="{style}"></td>'
+        html += f'<td id="c-{r}-{c}" style="{style}"></td>'
     html += "</tr>\n"
 html += "</table>"
-
+import json
+data = json.dumps({"maze": maze.tolist(), "weights": weights.tolist(),
+                   "start": start, "exits": exits})
+html += f"<script>const DATA = {data};</script>"
+html += '<script src="script.js"></script>'
 with open("test.html", "w") as f:
     f.write(html)
