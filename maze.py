@@ -58,3 +58,42 @@ graph = build_graph(maze, weights, nodes)
 for cell in sorted(nodes):
     edges = [(node_ids[n], w) for n, w in graph[cell]]
     print(f"Node {node_ids[cell]} at {cell}: {edges}")
+
+
+
+#figuring out shortest path from start node to end node using dijkstras algorithm
+
+import heapq
+
+def dijkstra(graph, start, end):
+    distances = {node: float('inf') for node in graph}
+    distances[start] = 0
+    pq = [(0, start)]
+    previous = {}
+
+    while pq:
+        current_distance, current_node = heapq.heappop(pq)
+
+        if current_node == end:
+            break
+
+        if current_distance > distances[current_node]:
+            continue
+
+        for neighbor, weight in graph[current_node]:
+            distance = current_distance + weight
+
+            if distance < distances[neighbor]:
+                distances[neighbor] = distance
+                previous[neighbor] = current_node
+                heapq.heappush(pq, (distance, neighbor))
+
+    path = []
+    current = end
+    while current in previous:
+        path.append(current)
+        current = previous[current]
+    path.append(start)
+    path.reverse()
+
+    return path, distances[end]
