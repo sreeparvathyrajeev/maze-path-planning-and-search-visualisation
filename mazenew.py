@@ -6,7 +6,7 @@ rows, cols = 50,50
 
 weights = np.random.randint(1, 6, size=(rows, cols))
 
-start, end = (0, 0), (rows - 1, cols - 1)
+start = (0, 0)
 
 import random
 DELTAS = [(-1, 0), (0, 1), (1, 0), (0, -1)]
@@ -41,8 +41,9 @@ for _ in range(150):                                  # more = more loops
     if 0 <= r + dr < rows and 0 <= c + dc < cols:
         open_wall(maze, r, c, s)
 
+exits = [(0, 24), (24, 49), (49, 25), (30, 0)]   # top, right, bottom, left
 
-nodes = {start, end}
+nodes = {start, *exits}  # start and exits are always nodes
 for r in range(rows):
     for c in range(cols):
         s = maze[r, c].sum()
@@ -124,7 +125,7 @@ def dijkstra(graph, start, end):
     return path, distances[end]
 
 
-path, cost = dijkstra(graph, start, end)
+path, cost = dijkstra(graph, start, exits[0])  # using the first exit for demonstration
 print("cost:", cost)
 print("path:", [node_ids[n] for n in path])
 
@@ -144,8 +145,8 @@ for r in range(rows):
     for c in range(cols):
         if (r,c)==start:
             style = "background:blue;"
-        elif (r,c)==end:
-            style = "background:pink;"
+        elif (r,c) in exits:
+            style = "background:magenta;"
         else:
             style = f"background:{colors[int(weights[r, c])]};"
         top, right, bottom, left = maze[r, c]
