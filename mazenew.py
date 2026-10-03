@@ -9,9 +9,9 @@ weights = np.random.randint(1, 6, size=(rows, cols))
 start = (0, 0)
 
 import random
-DELTAS = [(-1, 0), (0, 1), (1, 0), (0, -1)]
+DELTAS = [(-1, 0), (0, 1), (1, 0), (0, -1)]       # value to add to get neighbor coordinates for top, right, bottom, left
 def open_wall(maze, r, c, side):
-    dr, dc = DELTAS[side]
+    dr, dc = DELTAS[side]                         
     maze[r, c, side] = 0                          # this cell's side
     maze[r + dr, c + dc, (side + 2) % 4] = 0      # neighbor's matching side
 
@@ -20,17 +20,17 @@ def generate_maze(rows, cols, start):
     visited = {start}
     stack = [start]
     while stack:
-        r, c = stack[-1]
-        options = [(s, r + dr, c + dc) for s, (dr, dc) in enumerate(DELTAS)
+        r, c = stack[-1]                              # current cell
+        options = [(s, r + dr, c + dc) for s, (dr, dc) in enumerate(DELTAS)     # unvisited neighbors
                    if 0 <= r + dr < rows and 0 <= c + dc < cols
                    and (r + dr, c + dc) not in visited]
         if options:
-            s, nr, nc = random.choice(options)
-            open_wall(maze, r, c, s)                  # your existing function
-            visited.add((nr, nc))
-            stack.append((nr, nc))
+            s, nr, nc = random.choice(options)        #choose randomly from unvisited neighbors
+            open_wall(maze, r, c, s)                  # open wall to neighbor
+            visited.add((nr, nc))                     # mark neighbor as visited
+            stack.append((nr, nc))                    # keep tracking path for backtracking
         else:
-            stack.pop()                               # dead end, back up
+            stack.pop()                               # dead end, backtrack
     return maze
 
 maze = generate_maze(rows, cols, start)
