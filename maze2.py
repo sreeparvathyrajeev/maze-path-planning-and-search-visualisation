@@ -65,12 +65,14 @@ def open_neighbors(maze, cell):
 
 def walk(maze, weights, nodes, start, first_step):
     prev, cur = start, first_step
-    total = int(weights[cur])                      # entering first_step
+    cells = [cur]                                  # new: remember the cells passed
+    total = int(weights[cur])
     while cur not in nodes:
         (nxt,) = [n for n in open_neighbors(maze, cur) if n != prev]
         prev, cur = cur, nxt
-        total += int(weights[cur])                 # entering the next cell
-    return cur, total
+        cells.append(cur)                          # new
+        total += int(weights[cur])
+    return cur, total, cells                       # new: three values now
 
 def build_graph(maze, weights, nodes):
     graph = {}
@@ -82,7 +84,7 @@ def build_graph(maze, weights, nodes):
 graph = build_graph(maze, weights, nodes)
 
 for cell in sorted(nodes):
-    edges = [(node_ids[n], w) for n, w in graph[cell]]
+    edges = [(node_ids[n], w) for n, w, _ in graph[cell]]
     print(f"Node {node_ids[cell]} at {cell}: {edges}")
 
 
@@ -106,7 +108,7 @@ def dijkstra(graph, start, end):
         if current_distance > distances[current_node]:
             continue
 
-        for neighbor, weight in graph[current_node]:
+        for neighbor, weight, _ in graph[current_node]:
             distance = current_distance + weight
 
             if distance < distances[neighbor]:
@@ -157,10 +159,17 @@ for r in range(rows):
         html += f'<td id="c-{r}-{c}" style="{style}"></td>'
     html += "</tr>\n"
 html += "</table>"
+print("heheee")
 import json
+graph_json = {f"{r},{c}": [{"to": list(to), "cost": cost, "cells": [list(x) for x in cells]}
+                           for to, cost, cells in edges]
+              for (r, c), edges in graph.items()}
+
 data = json.dumps({"maze": maze.tolist(), "weights": weights.tolist(),
-                   "start": start, "exits": exits})
+                   "start": start, "exits": exits, "graph": graph_json})
+print("heheee")
 html += f"<script>const DATA = {data};</script>"
 html += '<script src="script.js"></script>'
+print("heheee")
 with open("test.html", "w") as f:
     f.write(html)
