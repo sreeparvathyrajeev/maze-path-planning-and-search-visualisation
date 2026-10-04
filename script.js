@@ -100,8 +100,8 @@ function dijkstra(start, goal) {
 
 // ---------- Replay ----------
 let timer = null;
-const STEPS_PER_TICK = 2;    // events per tick (higher = faster)
-const TICK_MS = 30;          // milliseconds between ticks
+const STEPS_PER_TICK = 1;    // events per tick (higher = faster)
+const TICK_MS = 60;          // milliseconds between ticks
 
 function replay(result) {
   let i = 0;
